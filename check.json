@@ -1,0 +1,72 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "socks-in",
+      "protocol": "socks",
+      "listen": "127.0.0.1",
+      "port": 10808,
+      "settings": {
+        "auth": "noauth",
+        "udp": true
+      },
+      "sniffing": {
+        "enabled": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "socks",
+      "settings": {
+        "servers": [
+          {
+            "address": "bytesx.toulouse-digital31.fr",
+            "port": 8443,
+            "users": [
+              {
+                "user": "751f24c333a383d7b1b2e205a52c249b",
+                "pass": "v1.498564.5dfce203.9cc6bbf04fe4a713e1f36961"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {}
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {}
+    }
+  ],
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "network": "tcp",
+        "port": "0-7005,7007-39599,39901-65535",
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "network": "udp",
+        "port": "0-10009,10021-65535",
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "network": "tcp,udp",
+        "outboundTag": "proxy"
+      }
+    ]
+  }
+}
